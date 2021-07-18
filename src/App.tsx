@@ -1,26 +1,26 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-
-function App() {
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import HomeLayout from './Layouts/HomeLayout';
+import DashboardLayout from './Layouts/DashboardLayout';
+import { connect } from 'react-redux'
+import { InitialAuthStateModel } from './Redux/Model';
+function App(props: any) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Switch>
+        {!props.otp && <Route path="/" render={(rp) => <HomeLayout {...rp} {...props} />} />}
+        {props.otp && <Route path="/" render={(rp) => <DashboardLayout {...rp} {...props} />} />}
+      </Switch>
+    </Router>
   );
 }
-
-export default App;
+const mapStateToProps = (state: InitialAuthStateModel) => {
+  console.log('app', state);
+  return {
+    isAuthenticated: state.isAuthenticated,
+    isExpired: state.isExpired,
+    user: state.user
+  };
+};
+export default connect(mapStateToProps)(App);
